@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { RepocatMark } from '@/components/Logo';
 import { LoginButton } from '@/components/LoginButton';
 
+// Set NEXT_PUBLIC_REPOKEN_CA once $REPOKEN is launched; until then the hero shows "not live yet".
+const REPOKEN_CA = process.env.NEXT_PUBLIC_REPOKEN_CA?.trim() || '';
+
 const STEPS = [
   { n: '01', t: 'Sign in with GitHub', d: 'Log in via Privy. Get an embedded wallet automatically if you don’t have one.' },
   { n: '02', t: 'Pick a repo', d: 'Load your repos. Metadata is pulled straight from GitHub.' },
@@ -53,6 +56,28 @@ export default function HomePage() {
               <Link href="/tokens" className="btn btn-ghost" style={{ color: 'var(--paper)', borderColor: 'var(--paper)' }}>
                 Browse launched tokens
               </Link>
+            </div>
+            <div
+              className="mono"
+              style={{
+                marginTop: 28,
+                display: 'inline-flex',
+                flexWrap: 'wrap',
+                gap: 10,
+                alignItems: 'center',
+                padding: '10px 14px',
+                border: '1px solid var(--gold)',
+                borderRadius: 8,
+                fontSize: 14,
+              }}
+            >
+              <span style={{ color: 'var(--gold)', fontWeight: 700 }}>$REPOKEN</span>
+              <span className="muted">CA:</span>
+              {REPOKEN_CA ? (
+                <span style={{ color: 'var(--paper)', wordBreak: 'break-all' }}>{REPOKEN_CA}</span>
+              ) : (
+                <span style={{ color: 'var(--paper)' }}>not live yet</span>
+              )}
             </div>
           </div>
         </div>
