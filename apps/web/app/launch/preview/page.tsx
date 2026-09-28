@@ -189,9 +189,9 @@ export default function PreviewPage() {
 
   return (
     <div className="container narrow" style={{ paddingTop: 56, paddingBottom: 40 }}>
-      <div className="eyebrow">Step 2 / 3</div>
-      <h1 style={{ fontSize: 40, marginTop: 10 }}>Preview token.</h1>
-      <div className="gold-rule" style={{ marginTop: 18 }} />
+      <div className="eyebrow enter" style={{ ['--d' as string]: '20ms' }}>Step 2 / 3</div>
+      <h1 className="enter" style={{ fontSize: 40, marginTop: 10, ['--d' as string]: '80ms' }}>Preview token.</h1>
+      <div className="gold-rule gold-rule--anim" style={{ marginTop: 18, ['--d' as string]: '260ms' }} />
 
       <div className="grid grid-2" style={{ marginTop: 32, alignItems: 'start' }}>
         {/* Editable fields */}

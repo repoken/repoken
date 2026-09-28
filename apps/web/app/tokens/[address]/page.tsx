@@ -82,8 +82,18 @@ export default function TokenDetailPage({ params }: { params: { address: string 
 
   if (state === 'loading') {
     return (
-      <div className="container narrow" style={{ paddingTop: 64 }}>
-        <p className="muted mono">Reading token on Robinhood Chain…</p>
+      <div className="container narrow" style={{ paddingTop: 56, paddingBottom: 40 }}>
+        <div className="mono muted" style={{ fontSize: 13 }}>← All tokens</div>
+        <div style={{ display: 'flex', gap: 18, alignItems: 'center', marginTop: 24 }}>
+          <div className="skeleton" style={{ width: 72, height: 72, borderRadius: 10 }} />
+          <div style={{ flex: 1 }}>
+            <div className="skeleton" style={{ width: '55%', height: 34, borderRadius: 6 }} />
+            <div className="skeleton" style={{ width: 90, height: 18, borderRadius: 6, marginTop: 10 }} />
+          </div>
+        </div>
+        <div className="gold-rule" style={{ marginTop: 22 }} />
+        <div className="skeleton" style={{ height: 180, borderRadius: 12, marginTop: 24 }} />
+        <p className="muted mono" style={{ fontSize: 13, marginTop: 16 }}>Reading token on Robinhood Chain…</p>
       </div>
     );
   }
@@ -116,7 +126,7 @@ export default function TokenDetailPage({ params }: { params: { address: string 
         ← All tokens
       </Link>
 
-      <div style={{ display: 'flex', gap: 18, alignItems: 'center', marginTop: 24 }}>
+      <div className="enter" style={{ display: 'flex', gap: 18, alignItems: 'center', marginTop: 24, ['--d' as string]: '40ms' }}>
         {image && (
           <Image
             src={image}
@@ -134,7 +144,7 @@ export default function TokenDetailPage({ params }: { params: { address: string 
         </div>
       </div>
 
-      <div className="gold-rule" style={{ marginTop: 22 }} />
+      <div className="gold-rule gold-rule--anim" style={{ marginTop: 22, ['--d' as string]: '160ms' }} />
 
       {local?.description && <p style={{ marginTop: 22, fontSize: 18 }}>{local.description}</p>}
 

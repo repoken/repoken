@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useEffect, useMemo, useState } from 'react';
 import { listLaunches, type LaunchRecord } from '@/lib/draft';
 import { ipfsToHttp } from '@/lib/ipfs';
+import { Reveal } from '@/components/Reveal';
 
 type SortKey = 'new' | 'trending' | 'top';
 
@@ -68,7 +69,7 @@ export default function TokensPage() {
                 aria-selected={active}
                 title={t.hint}
                 onClick={() => setSort(t.key)}
-                className="mono"
+                className="mono tab-pill"
                 style={{
                   fontSize: 13,
                   textTransform: 'uppercase',
@@ -104,38 +105,39 @@ export default function TokensPage() {
       )}
 
       <div className="grid grid-3" style={{ marginTop: 24 }}>
-        {sorted.map((r) => (
-          <Link
-            key={r.tokenAddress}
-            href={`/tokens/${r.tokenAddress}`}
-            className="card card-hover"
-            style={{ display: 'block' }}
-          >
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              {r.image && (
-                <Image
-                  src={ipfsToHttp(r.image)}
-                  alt=""
-                  width={40}
-                  height={40}
-                  style={{ borderRadius: 8, border: '1px solid var(--line)' }}
-                />
-              )}
-              <div>
-                <div style={{ fontWeight: 800, fontSize: 18 }}>{r.name}</div>
-                <div className="mono" style={{ color: 'var(--gold)', fontSize: 14 }}>
-                  ${r.symbol}
+        {sorted.map((r, i) => (
+          <Reveal key={r.tokenAddress} delay={Math.min(i, 6) * 60}>
+            <Link
+              href={`/tokens/${r.tokenAddress}`}
+              className="card card-hover"
+              style={{ display: 'block', height: '100%' }}
+            >
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                {r.image && (
+                  <Image
+                    src={ipfsToHttp(r.image)}
+                    alt=""
+                    width={40}
+                    height={40}
+                    style={{ borderRadius: 8, border: '1px solid var(--line)' }}
+                  />
+                )}
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: 18 }}>{r.name}</div>
+                  <div className="mono" style={{ color: 'var(--gold)', fontSize: 14 }}>
+                    ${r.symbol}
+                  </div>
                 </div>
               </div>
-            </div>
-            <p className="mono muted" style={{ fontSize: 12, marginTop: 10, wordBreak: 'break-all' }}>
-              {r.repo}
-            </p>
-            <hr className="rule" style={{ margin: '12px 0' }} />
-            <div className="mono muted" style={{ fontSize: 12, wordBreak: 'break-all' }}>
-              {r.tokenAddress}
-            </div>
-          </Link>
+              <p className="mono muted" style={{ fontSize: 12, marginTop: 10, wordBreak: 'break-all' }}>
+                {r.repo}
+              </p>
+              <hr className="rule" style={{ margin: '12px 0' }} />
+              <div className="mono muted" style={{ fontSize: 12, wordBreak: 'break-all' }}>
+                {r.tokenAddress}
+              </div>
+            </Link>
+          </Reveal>
         ))}
       </div>
     </div>

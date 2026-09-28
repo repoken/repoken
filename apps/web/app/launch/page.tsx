@@ -64,10 +64,10 @@ export default function LaunchPage() {
 
   return (
     <div className="container narrow" style={{ paddingTop: 56, paddingBottom: 40 }}>
-      <div className="eyebrow">Step 1 / 3</div>
-      <h1 style={{ fontSize: 40, marginTop: 10 }}>Pick a repo.</h1>
-      <div className="gold-rule" style={{ marginTop: 18 }} />
-      <p className="muted" style={{ marginTop: 18 }}>
+      <div className="eyebrow enter" style={{ ['--d' as string]: '20ms' }}>Step 1 / 3</div>
+      <h1 className="enter" style={{ fontSize: 40, marginTop: 10, ['--d' as string]: '80ms' }}>Pick a repo.</h1>
+      <div className="gold-rule gold-rule--anim" style={{ marginTop: 18, ['--d' as string]: '260ms' }} />
+      <p className="muted enter" style={{ marginTop: 18, ['--d' as string]: '160ms' }}>
         Token metadata is pulled automatically from the repo you choose.
       </p>
 

@@ -5,7 +5,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://repoken.xyz'),
+  metadataBase: new URL('https://repoken.fun'),
   title: {
     default: 'Repoken — Your GitHub repo as a token on-chain',
     template: '%s · Repoken',

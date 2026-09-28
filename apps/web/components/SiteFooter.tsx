@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Logo } from './Logo';
+import { RepokenCA } from './RepokenCA';
 
 export function SiteFooter() {
   return (
@@ -19,6 +20,9 @@ export function SiteFooter() {
               Your GitHub repo as a token on-chain. Automatic metadata, launched via
               the PONS factory on Robinhood Chain.
             </p>
+            <div style={{ marginTop: 18 }}>
+              <RepokenCA onDark />
+            </div>
           </div>
 
           <div style={{ display: 'flex', gap: 56, flexWrap: 'wrap' }}>
@@ -27,8 +31,8 @@ export function SiteFooter() {
                 Product
               </div>
               <div className="stack" style={{ ['--gap' as string]: '8px' }}>
-                <Link href="/launch">Launch</Link>
-                <Link href="/tokens">Tokens</Link>
+                <Link href="/launch" className="nav-link" style={{ alignSelf: 'flex-start' }}>Launch</Link>
+                <Link href="/tokens" className="nav-link" style={{ alignSelf: 'flex-start' }}>Tokens</Link>
               </div>
             </div>
             <div>
@@ -36,10 +40,10 @@ export function SiteFooter() {
                 Social
               </div>
               <div className="stack" style={{ ['--gap' as string]: '8px' }}>
-                <a href="https://x.com/repokendotfun" target="_blank" rel="noreferrer">
+                <a href="https://x.com/repokendotfun" target="_blank" rel="noreferrer" className="nav-link" style={{ alignSelf: 'flex-start' }}>
                   X
                 </a>
-                <a href="https://github.com/repoken" target="_blank" rel="noreferrer">
+                <a href="https://github.com/repoken" target="_blank" rel="noreferrer" className="nav-link" style={{ alignSelf: 'flex-start' }}>
                   GitHub
                 </a>
               </div>

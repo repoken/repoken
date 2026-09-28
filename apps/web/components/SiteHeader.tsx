@@ -11,7 +11,7 @@ export function SiteHeader() {
 
   return (
     <header
-      className={onDark ? 'band-dark' : ''}
+      className={onDark ? 'band-dark site-header' : 'site-header'}
       style={{
         borderBottom: onDark ? '1px solid var(--line-dark)' : '1px solid var(--line)',
       }}
@@ -25,14 +25,14 @@ export function SiteHeader() {
           height: 68,
         }}
       >
-        <Link href="/" aria-label="Repoken beranda">
+        <Link href="/" aria-label="Repoken home" className="logo-link">
           <Logo color={onDark ? 'var(--paper)' : 'var(--ink)'} />
         </Link>
 
         <nav style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
           <Link
             href="/tokens"
-            className="mono"
+            className="mono nav-link"
             style={{ fontSize: 13, letterSpacing: '0.08em', textTransform: 'uppercase' }}
           >
             Tokens
@@ -41,7 +41,7 @@ export function SiteHeader() {
             href="https://x.com/repokendotfun"
             target="_blank"
             rel="noreferrer"
-            className="mono"
+            className="mono nav-link"
             style={{ fontSize: 13, letterSpacing: '0.08em', textTransform: 'uppercase' }}
           >
             X
@@ -50,7 +50,7 @@ export function SiteHeader() {
             href="https://github.com/repoken"
             target="_blank"
             rel="noreferrer"
-            className="mono"
+            className="mono nav-link"
             style={{ fontSize: 13, letterSpacing: '0.08em', textTransform: 'uppercase' }}
           >
             GitHub

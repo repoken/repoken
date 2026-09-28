@@ -34,21 +34,21 @@ export default function SuccessPage() {
 
   return (
     <div className="container narrow" style={{ paddingTop: 64, paddingBottom: 40, textAlign: 'center' }}>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div className="pop-in" style={{ display: 'flex', justifyContent: 'center' }}>
         <RepocatMark size={72} color="var(--ink)" branch />
       </div>
-      <div className="eyebrow" style={{ marginTop: 20 }}>
+      <div className="eyebrow enter" style={{ marginTop: 20, ['--d' as string]: '120ms' }}>
         Step 3 / 3 · Done
       </div>
-      <h1 style={{ fontSize: 44, marginTop: 10 }}>
+      <h1 className="enter" style={{ fontSize: 44, marginTop: 10, ['--d' as string]: '180ms' }}>
         ${result.symbol} is live.
       </h1>
-      <p className="muted" style={{ marginTop: 12 }}>
+      <p className="muted enter" style={{ marginTop: 12, ['--d' as string]: '240ms' }}>
         Token <strong>{result.name}</strong> from <span className="mono">{result.repo}</span> has been
         deployed on Robinhood Chain.
       </p>
 
-      <div className="card" style={{ marginTop: 28, textAlign: 'left', background: '#f8f6f0' }}>
+      <div className="card enter" style={{ marginTop: 28, textAlign: 'left', background: '#f8f6f0', ['--d' as string]: '300ms' }}>
         <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '10px 16px' }}>
           <dt className="mono muted" style={{ fontSize: 13 }}>token</dt>
           <dd className="mono" style={{ margin: 0, fontSize: 13, wordBreak: 'break-all' }}>
@@ -61,7 +61,7 @@ export default function SuccessPage() {
         </dl>
       </div>
 
-      <div style={{ display: 'flex', gap: 12, marginTop: 28, justifyContent: 'center', flexWrap: 'wrap' }}>
+      <div className="enter" style={{ display: 'flex', gap: 12, marginTop: 28, justifyContent: 'center', flexWrap: 'wrap', ['--d' as string]: '360ms' }}>
         {result.tokenAddress && (
           <Link href={`/tokens/${result.tokenAddress}`} className="btn">
             View token page
