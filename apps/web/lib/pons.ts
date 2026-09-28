@@ -41,6 +41,17 @@ export const PONS_LAUNCH_FEE = parseEther('0.0005');
  */
 export const REPOKEN_TAX_BPS = 200n;
 
+/**
+ * The studio reverts when devBuy == 0 (verified via eth_call). Real zero-buy
+ * launches on-chain send 2 wei, so a "no dev buy" launch uses this floor.
+ */
+export const PONS_MIN_DEV_BUY_WEI = 2n;
+
+function devBuyWei(devBuyEth?: string): bigint {
+  const wei = parseEther(devBuyEth ?? '0');
+  return wei < PONS_MIN_DEV_BUY_WEI ? PONS_MIN_DEV_BUY_WEI : wei;
+}
+
 const ZERO32 = ('0x' + '00'.repeat(32)) as Hex;
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000' as Address;
 /** ERC-20 Transfer(address,address,uint256) topic0. */
@@ -105,7 +116,7 @@ export function buildPonsLaunchCalldata(p: PonsLaunchParams): Hex {
     meta,
     0n, // p1 (always 0 in observed launches)
     p.pairToken ?? ZERO_ADDRESS,
-    parseEther(p.devBuyEth ?? '0'),
+    devBuyWei(p.devBuyEth),
     p.minOut ?? 0n,
     p.creator,
     [], // recipients bundle (none)
@@ -115,7 +126,7 @@ export function buildPonsLaunchCalldata(p: PonsLaunchParams): Hex {
 
 /** msg.value required = dev buy + platform launch fee. */
 export function ponsLaunchValue(devBuyEth?: string): bigint {
-  return parseEther(devBuyEth ?? '0') + PONS_LAUNCH_FEE;
+  return devBuyWei(devBuyEth) + PONS_LAUNCH_FEE;
 }
 
 /**
