@@ -27,6 +27,7 @@ export default function PreviewPage() {
   const [draft, setDraft] = useState<LaunchDraft | null>(null);
   const [phase, setPhase] = useState<Phase>('idle');
   const [msg, setMsg] = useState<string>('');
+  const [devBuy, setDevBuy] = useState<string>('');
 
   const { address, isConnected } = useAccount();
   const { writeContractAsync } = useWriteContract();
@@ -56,6 +57,14 @@ export default function PreviewPage() {
     () => SPLITTER_FACTORY_ADDRESS && !/^0x0+$/.test(SPLITTER_FACTORY_ADDRESS),
     [],
   );
+
+  // Normalized dev buy: empty / invalid / non-positive → "0".
+  const devBuyEth = useMemo(() => {
+    const n = Number(devBuy);
+    if (!devBuy.trim() || !Number.isFinite(n) || n <= 0) return '0';
+    return devBuy.trim();
+  }, [devBuy]);
+  const devBuyInvalid = devBuy.trim() !== '' && !(Number(devBuy) >= 0);
 
   if (!draft) {
     return (
@@ -132,13 +141,13 @@ export default function PreviewPage() {
         creator: address,
         feeWallet,
         taxBps: REPOKEN_TAX_BPS,
-        devBuyEth: '0',
+        devBuyEth,
       });
 
       const hash = await sendTransactionAsync({
         to: PONS_STUDIO,
         data,
-        value: ponsLaunchValue('0'),
+        value: ponsLaunchValue(devBuyEth),
         chainId: robinhoodChain.id,
       });
 
@@ -165,6 +174,7 @@ export default function PreviewPage() {
         externalUrl: draft.externalUrl,
         metadataURI,
         creator: address,
+        splitter: feeWallet,
         launchedAt: Date.now(),
       });
       setPhase('done');
@@ -211,6 +221,27 @@ export default function PreviewPage() {
               value={draft.description}
               onChange={(e) => update('description', e.target.value)}
             />
+          </div>
+          <div>
+            <label className="lab">Dev buy (optional)</label>
+            <input
+              className="field field-mono"
+              type="number"
+              min="0"
+              step="0.001"
+              inputMode="decimal"
+              placeholder="0.0 ETH"
+              value={devBuy}
+              onChange={(e) => setDevBuy(e.target.value)}
+            />
+            <p className="mono muted" style={{ marginTop: 6, fontSize: 12 }}>
+              Buy your own token at launch so you hold the first bag. Added to the tx value on top of the 0.0005 ETH launch fee.
+            </p>
+            {devBuyInvalid && (
+              <p className="mono" style={{ marginTop: 6, fontSize: 12, color: 'var(--bad)' }}>
+                Enter a non-negative amount.
+              </p>
+            )}
           </div>
         </div>
 
@@ -282,7 +313,7 @@ export default function PreviewPage() {
             Sign in to launch
           </button>
         ) : (
-          <button className="btn btn-gold" onClick={launch} disabled={busy}>
+          <button className="btn btn-gold" onClick={launch} disabled={busy || devBuyInvalid}>
             {busy ? 'Processing…' : 'Launch token'}
           </button>
         )}
@@ -290,6 +321,9 @@ export default function PreviewPage() {
 
       <p className="mono muted" style={{ marginTop: 16, fontSize: 12 }}>
         Launches via the PONS studio. 2% tax → 1% to $REPOKEN buyback &amp; burn, 1% to you.
+      </p>
+      <p className="mono muted" style={{ marginTop: 6, fontSize: 12 }}>
+        Cost: 0.0005 ETH launch fee{devBuyEth !== '0' && ` + ${devBuyEth} ETH dev buy`} + gas.
       </p>
       {!splitterConfigured && (
         <p className="mono muted" style={{ marginTop: 8, fontSize: 12 }}>

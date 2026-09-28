@@ -75,6 +75,8 @@ export interface LaunchRecord {
   externalUrl?: string;
   metadataURI?: string;
   creator?: string;
+  /** Per-creator FeeSplitter that receives the 2% launch tax (50/50 split). */
+  splitter?: string;
   launchedAt: number; // epoch ms
 }
 

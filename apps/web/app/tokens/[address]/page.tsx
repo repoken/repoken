@@ -7,6 +7,8 @@ import { createPublicClient, http, formatUnits, isAddress, erc20Abi, type Addres
 import { robinhoodChain } from '@/lib/chain';
 import { getLaunch, type LaunchRecord } from '@/lib/draft';
 import { ipfsToHttp } from '@/lib/ipfs';
+import { ClaimFeesButton } from '@/components/ClaimFeesButton';
+import { SPLITTER_FACTORY_ADDRESS, splitterFactoryAbi } from '@/lib/contracts';
 
 interface TokenView {
   name: string;
@@ -22,11 +24,32 @@ export default function TokenDetailPage({ params }: { params: { address: string 
   const [onchain, setOnchain] = useState<TokenView | null>(null);
   const [local, setLocal] = useState<LaunchRecord | null>(null);
   const [state, setState] = useState<'loading' | 'ok' | 'notfound'>('loading');
+  const [splitter, setSplitter] = useState<Address | null>(null);
 
   useEffect(() => {
     if (!valid) return;
-    setLocal(getLaunch(addr));
+    const record = getLaunch(addr);
+    setLocal(record);
     const client = createPublicClient({ chain: robinhoodChain, transport: http() });
+
+    // Resolve the token's fee splitter: use the stored address, or derive it
+    // from the creator via the factory (CREATE2 is deterministic).
+    const factoryConfigured =
+      SPLITTER_FACTORY_ADDRESS && !/^0x0+$/.test(SPLITTER_FACTORY_ADDRESS);
+    if (record?.splitter && isAddress(record.splitter)) {
+      setSplitter(record.splitter as Address);
+    } else if (record?.creator && isAddress(record.creator) && factoryConfigured) {
+      client
+        .readContract({
+          address: SPLITTER_FACTORY_ADDRESS,
+          abi: splitterFactoryAbi,
+          functionName: 'predict',
+          args: [record.creator as Address],
+        })
+        .then((s) => setSplitter(s as Address))
+        .catch(() => setSplitter(null));
+    }
+
     const base = { address: addr as Address, abi: erc20Abi } as const;
     Promise.all([
       client.readContract({ ...base, functionName: 'name' }),
@@ -175,6 +198,8 @@ export default function TokenDetailPage({ params }: { params: { address: string 
           )}
         </dl>
       </div>
+
+      {splitter && <ClaimFeesButton splitter={splitter} />}
 
       <div style={{ marginTop: 24 }}>
         <a

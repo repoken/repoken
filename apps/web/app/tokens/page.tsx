@@ -2,18 +2,45 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { listLaunches, type LaunchRecord } from '@/lib/draft';
 import { ipfsToHttp } from '@/lib/ipfs';
+
+type SortKey = 'new' | 'trending' | 'top';
+
+const TABS: { key: SortKey; label: string; hint: string }[] = [
+  { key: 'new', label: 'New', hint: 'Latest launches first' },
+  { key: 'trending', label: 'Trending', hint: 'Launched in the last 7 days' },
+  { key: 'top', label: 'Top', hint: 'Longest-standing launches' },
+];
+
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 export default function TokensPage() {
   const [rows, setRows] = useState<LaunchRecord[]>([]);
   const [ready, setReady] = useState(false);
+  const [sort, setSort] = useState<SortKey>('new');
 
   useEffect(() => {
     setRows(listLaunches());
     setReady(true);
   }, []);
+
+  const sorted = useMemo(() => {
+    const list = [...rows];
+    const now = Date.now();
+    switch (sort) {
+      case 'trending':
+        return list
+          .filter((r) => now - (r.launchedAt ?? 0) <= WEEK_MS)
+          .sort((a, b) => (b.launchedAt ?? 0) - (a.launchedAt ?? 0));
+      case 'top':
+        return list.sort((a, b) => (a.launchedAt ?? 0) - (b.launchedAt ?? 0));
+      case 'new':
+      default:
+        return list.sort((a, b) => (b.launchedAt ?? 0) - (a.launchedAt ?? 0));
+    }
+  }, [rows, sort]);
 
   return (
     <div className="container" style={{ paddingTop: 56, paddingBottom: 40 }}>
@@ -26,6 +53,41 @@ export default function TokensPage() {
         contract and trade it on PONS.
       </p>
 
+      {ready && rows.length > 0 && (
+        <div
+          role="tablist"
+          aria-label="Sort tokens"
+          style={{ display: 'flex', gap: 8, marginTop: 28, flexWrap: 'wrap' }}
+        >
+          {TABS.map((t) => {
+            const active = sort === t.key;
+            return (
+              <button
+                key={t.key}
+                role="tab"
+                aria-selected={active}
+                title={t.hint}
+                onClick={() => setSort(t.key)}
+                className="mono"
+                style={{
+                  fontSize: 13,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  padding: '8px 16px',
+                  borderRadius: 999,
+                  cursor: 'pointer',
+                  border: `1px solid ${active ? 'var(--ink)' : 'var(--line)'}`,
+                  background: active ? 'var(--ink)' : 'transparent',
+                  color: active ? 'var(--paper)' : 'var(--muted)',
+                }}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {ready && rows.length === 0 && (
         <div className="card" style={{ marginTop: 32 }}>
           <p className="muted">No launches yet from this browser. Be the first.</p>
@@ -35,8 +97,14 @@ export default function TokensPage() {
         </div>
       )}
 
-      <div className="grid grid-3" style={{ marginTop: 32 }}>
-        {rows.map((r) => (
+      {ready && rows.length > 0 && sorted.length === 0 && (
+        <div className="card" style={{ marginTop: 24 }}>
+          <p className="muted">Nothing here right now. Try another tab.</p>
+        </div>
+      )}
+
+      <div className="grid grid-3" style={{ marginTop: 24 }}>
+        {sorted.map((r) => (
           <Link
             key={r.tokenAddress}
             href={`/tokens/${r.tokenAddress}`}

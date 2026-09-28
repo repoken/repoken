@@ -12,6 +12,38 @@ export const FACTORY_ADDRESS = (process.env.NEXT_PUBLIC_FACTORY_ADDRESS ??
 export const SPLITTER_FACTORY_ADDRESS = (process.env.NEXT_PUBLIC_SPLITTER_FACTORY ??
   '0x0000000000000000000000000000000000000000') as Address;
 
+/** ABI subset for FeeSplitter — the per-creator 50/50 split of the launch tax. */
+export const feeSplitterAbi = [
+  {
+    type: 'function',
+    name: 'release',
+    stateMutability: 'nonpayable',
+    inputs: [],
+    outputs: [],
+  },
+  {
+    type: 'function',
+    name: 'releaseToken',
+    stateMutability: 'nonpayable',
+    inputs: [{ name: 'token', type: 'address' }],
+    outputs: [],
+  },
+  {
+    type: 'function',
+    name: 'treasury',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'address' }],
+  },
+  {
+    type: 'function',
+    name: 'creator',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'address' }],
+  },
+] as const;
+
 /** ABI subset for SplitterFactory. */
 export const splitterFactoryAbi = [
   {
